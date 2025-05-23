@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageTk
 from tkinter import messagebox
-
+import subprocess
 
 class Speak3ProApp(tk.Tk):
     def __init__(self):
@@ -72,6 +72,7 @@ class LoginPage(tk.Frame):
             return
         # Adicione sua lógica de autenticação aqui
         messagebox.showinfo("Login", "Login successful!")
+        subprocess.Popen(["python", "main.py"])
 
 
 
@@ -162,7 +163,6 @@ class RegisterPageStep2(tk.Frame):
         if password != confirm:
             messagebox.showerror("Validation Error", "Passwords do not match.")
             return
-        messagebox.showinfo("Success", "Registration completed!")
         self.controller.show_frame(RegisterCompletePage)
 
 

@@ -1,10 +1,11 @@
 import tkinter as tk
 from tkinter import ttk
+import subprocess
 
 class HomePage(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("SpeakThreePro - Home")
+        self.title("Speak3Pro - Home")
         self.geometry("1024x720")
         self.configure(bg="#edf0f2")
 
@@ -59,12 +60,13 @@ class HomePage(tk.Tk):
 
     def create_header(self):
         header = tk.Frame(self.content_frame, bg="#0b1e33", height=60)
-        header.pack(fill="x", pady=(0, 10))
+        header.pack(fill="x", pady=(0))
+        header.configure()
 
         header.grid_columnconfigure(0, weight=1)
         header.grid_rowconfigure(0, weight=1)
 
-        title = tk.Label(header, text="SpeakThreePro", font=("Georgia", 16, "bold"), fg="white", bg="#0b1e33")
+        title = tk.Label(header, text="Speak3Pro", font=("Georgia", 16, "bold"), fg="white", bg="#0b1e33")
         title.grid(row=0, column=0, padx=20, sticky="w")
 
         btn_frame = tk.Frame(header, bg="#0b1e33")
@@ -87,10 +89,10 @@ class HomePage(tk.Tk):
         login_frame.grid(row=0, column=3, padx=20)
 
         login_btn = tk.Button(login_frame, text="Login", bg="#0b1e33", fg="white", borderwidth=1,
-                              relief="solid", font=("Helvetica", 10), activebackground="#1a2e52", activeforeground="white")
+                              relief="solid", font=("Helvetica", 10), activebackground="#1a2e52", activeforeground="white", command=lambda: subprocess.Popen(["python", "registro.py"]))
         login_btn.pack(side="left", padx=5)
         register_btn = tk.Button(login_frame, text="Register", bg="#0b1e33", fg="white", borderwidth=1,
-                                 relief="solid", font=("Helvetica", 10), activebackground="#1a2e52", activeforeground="white")
+                                 relief="solid", font=("Helvetica", 10), activebackground="#1a2e52", activeforeground="white", command=lambda: subprocess.Popen(["python", "registro.py"]))
         register_btn.pack(side="left", padx=5)
 
     def create_course_cards(self):
