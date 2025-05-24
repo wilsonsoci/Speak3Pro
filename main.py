@@ -60,8 +60,7 @@ class HomePage(tk.Tk):
 
     def create_header(self):
         header = tk.Frame(self.content_frame, bg="#0b1e33", height=60)
-        header.pack(fill="x", pady=(0))
-        header.configure()
+        header.pack(fill="x", pady=(0, 10))
 
         header.grid_columnconfigure(0, weight=1)
         header.grid_rowconfigure(0, weight=1)
@@ -88,12 +87,14 @@ class HomePage(tk.Tk):
         login_frame = tk.Frame(header, bg="#0b1e33")
         login_frame.grid(row=0, column=3, padx=20)
 
-        login_btn = tk.Button(login_frame, text="Login", bg="#0b1e33", fg="white", borderwidth=1,
-                              relief="solid", font=("Helvetica", 10), activebackground="#1a2e52", activeforeground="white", command=lambda: subprocess.Popen(["python", "registro.py"]))
-        login_btn.pack(side="left", padx=5)
-        register_btn = tk.Button(login_frame, text="Register", bg="#0b1e33", fg="white", borderwidth=1,
-                                 relief="solid", font=("Helvetica", 10), activebackground="#1a2e52", activeforeground="white", command=lambda: subprocess.Popen(["python", "registro.py"]))
-        register_btn.pack(side="left", padx=5)
+        self.subprocesso = None
+
+        self.login_btn = tk.Button(login_frame, text="Login", bg="#0b1e33", fg="white", borderwidth=1,
+                              relief="solid", font=("Helvetica", 10), activebackground="#1a2e52", activeforeground="white", command=self.open_login)
+        self.login_btn.pack(side="left", padx=5)
+        self.register_btn = tk.Button(login_frame, text="Register", bg="#0b1e33", fg="white", borderwidth=1,
+                                 relief="solid", font=("Helvetica", 10), activebackground="#1a2e52", activeforeground="white", command=self.open_login)
+        self.register_btn.pack(side="left", padx=5)
 
     def create_course_cards(self):
         title = tk.Label(self.content_frame, text="Where you really learn!", font=("Georgia", 20, "bold"),
@@ -112,7 +113,7 @@ class HomePage(tk.Tk):
             card = tk.Frame(cards_frame, bg="#7a8ea1", bd=0, relief="ridge", padx=15, pady=15)
             card.grid(row=i // 3, column=i % 3, padx=15, pady=15, sticky="nsew")
 
-            emoji = tk.Label(card, text="🏳️", font=("Arial", 30), bg="#7a8ea1")
+            emoji = tk.Label(card, text="", font=("Arial", 30), bg="#7a8ea1")
             emoji.pack(pady=(0, 10))
 
             course_label = tk.Label(card, text=course, font=("Georgia", 14, "bold"), bg="#7a8ea1", fg="white")
@@ -121,6 +122,12 @@ class HomePage(tk.Tk):
             desc_label = tk.Label(card, text="Find out about the course", font=("Helvetica", 10), bg="#7a8ea1",
                                   fg="white")
             desc_label.pack()
+
+        courses_btn = tk.Button(self.content_frame, text="See More", bg="#0b1e33", fg="white",
+                            font=("Helvetica", 12, "bold"), padx=20, pady=10,
+                            activebackground="#152a4f", activeforeground="white",
+                            command=self.open_courses_window)
+        courses_btn.pack()
 
     def create_additional_sections(self):
         motivational = tk.Label(self.content_frame, text="Achieve fluency once and for all!",
@@ -193,13 +200,6 @@ class HomePage(tk.Tk):
         profile_btn.pack(pady=(10, 30))
 
 
-        courses_btn = tk.Button(self.content_frame, text="View Courses", bg="#0b1e33", fg="white",
-                                font=("Helvetica", 12, "bold"), padx=20, pady=10,
-                                activebackground="#152a4f", activeforeground="white",
-                                command=self.open_courses_window)
-        courses_btn.pack(pady=(10, 30))
-
-
     def open_who_are_we(self):
         WhoAreWeWindow(self)
 
@@ -209,6 +209,20 @@ class HomePage(tk.Tk):
     def open_courses_window(self):
         CoursesWindow(self)
 
+    def open_login(self): 
+        if self.subprocesso is None or self.subprocesso.poll() is not None:
+            self.login_btn.config(state="disabled")
+            self.register_btn.config(state="disabled")
+
+            self.subprocesso = subprocess.Popen(["python", "registro.py"])
+            self.master.after(500, self.verificar_processo)
+
+    def verificar_processo(self):
+        if self.subprocesso.poll() is None:
+            self.master.after(500, self.verificar_processo)
+        else:
+            self.login_btn.config(state="normal")
+            self.register_btn.config(state="normal")
 
     
 
@@ -295,7 +309,7 @@ class WhoAreWeWindow(tk.Toplevel):
 
 
 class UserProfile(tk.Toplevel):
-    def __init__(self, parent, user_name="Murillo"):
+    def __init__(self, parent, user_name=""):
         super().__init__(parent)
         self.title("User Profile")
         self.geometry("900x700")
